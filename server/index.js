@@ -5,11 +5,12 @@ const socketIO = require("socket.io");
 
 const PORT = 8000;
 const app = express();
-const users = [];
+const users = {};
 
 app.use(cors({ origin: "*", Credentials: true }));
 const server = http.createServer(app);
 const io = socketIO(server);
+
 io.on("connection", (socket) => {
   console.log(`New Connection - ${socket.id}`);
   socket.on("joined", ({ user }) => {
@@ -24,12 +25,25 @@ io.on("connection", (socket) => {
       msg: `WELCOME to the Chat ${users[socket.id]}`,
     });
   });
+
+  socket.on("message", ({ msg, id }) => {
+    io.emit("sendMsg", { user: users[id], msg, id });
+  });
+
   socket.on("disconnect", () => {
-    socket.broadcast.emit("leaved", {
-      user: "Admin",
-      msg: `${users[socket.id]} left the chat`,
-    });
-    console.log(`${users[socket.id]} Left`);
+    const user = users[socket.id];
+    if (user) {
+      socket.broadcast.emit("leaved", {
+        user: "Admin",
+        msg: `${users[socket.id]} left the chat`,
+      });
+      console.log(`${users[socket.id]} Left`);
+    } else {
+      console.log(
+        `User with socket id ${socket.id} disconnected before joining.`
+      );
+    }
+    delete users[socket.id];
   });
 });
 server.listen(PORT, () => {
