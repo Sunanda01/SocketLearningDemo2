@@ -23,7 +23,7 @@ function Chat() {
       setMessage((prev) => [...prev, data]);
       console.log(`${data.user} ${data.msg} ${data.id}`);
     });
-  }, []);
+  });
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -47,7 +47,7 @@ function Chat() {
       socket.emit("disconnect");
       socket.off();
     };
-  }, []);
+  });
 
   return (
     <>
