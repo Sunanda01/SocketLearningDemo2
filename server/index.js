@@ -1,0 +1,21 @@
+const express = require("express");
+const cors = require("cors");
+const http = require("http");
+const socketIO = require("socket.io");
+
+const PORT = 8000;
+const app = express();
+
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: {
+    origin: "*",
+    Credentials: true,
+  },
+});
+io.on('connection',(socket)=>{
+    console.log(`New Connection - ${socket.id}`)
+})
+server.listen(PORT, () => {
+  console.log(`Connected @ PORT ${PORT}`);
+});
