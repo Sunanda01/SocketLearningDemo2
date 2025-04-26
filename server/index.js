@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
     io.emit("sendMsg", { user: users[id], msg, id });
   });
 
-  socket.on("manual-disconnect", () => {
+  socket.on("disconnect", () => {
     const user = users[socket.id];
     if (user) {
       socket.broadcast.emit("leaved", {

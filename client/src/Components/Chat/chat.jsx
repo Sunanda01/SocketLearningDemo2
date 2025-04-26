@@ -44,7 +44,7 @@ function Chat() {
       console.log(`${data.user} ${data.msg}`);
     });
     return () => {
-      socket.emit("manual-disconnect");
+      socket.emit("disconnect");
       socket.off();
     };
   },[]);
